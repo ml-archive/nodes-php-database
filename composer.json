@@ -1,0 +1,31 @@
+{
+    "name": "nodes/database",
+    "description": "Makes it easier to work with models and repositories in Laravel",
+    "keywords": [
+        "nodes",
+        "database",
+        "laravel",
+        "eloquent",
+        "repository"
+    ],
+    "license": "MIT",
+    "homepage": "http://nodesagency.com",
+    "authors": [
+        {
+            "name": "Morten Rugaard",
+            "email": "moru@nodes.dk",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "laravel/framework": "5.1.*",
+        "nodes/core": "^0.1",
+        "nodes/counter-cache": "^0.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Nodes\\Database\\": "src"
+        }
+    },
+    "minimum-stability": "stable"
+}
