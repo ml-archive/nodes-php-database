@@ -1,47 +1,50 @@
 <?php
 namespace Nodes\Database\Eloquent;
 
-use Carbon\Carbon;
+use Exception;
+use Throwable;
+use Illuminate\Database\Eloquent\Model as IlluminateModel;
+use Nodes\Database\Exceptions\SaveFailedException;
 
 /**
  * Class Model
  *
- * @trait
  * @package Nodes\Database\Eloquent
  */
-trait Model
+class Model extends IlluminateModel
 {
     /**
-     * Convert date to human-readable
-     * E.g. "2 hours ago"
+     * Save the model to the database
      *
      * @author Morten Rugaard <moru@nodes.dk>
-     * @date   21-10-2015
      *
      * @access public
-     * @param  string  $column
-     * @param  string  $format
-     * @param  integer $maxDays
-     * @return string
+     * @param  array $options
+     * @return boolean
+     * @throws \Nodes\Database\Exceptions\SaveFailedException
      */
-    public function getDateHumanReadable($column, $format = 'd-m-Y H:i:s', $maxDays = 3)
+    public function save(array $options = [])
     {
-        // Retrieve value of column
-        $date = $this->{$column};
+        try {
+            // Save model to database
+            $result = parent::save($options);
 
-        // Make sure date is a Carbon object
-        // otherwise just return untouched value
-        if (!$date instanceof Carbon) {
-            return $column;
+            // If save has been aborted from an event/observer
+            // or simply returned an empty response, we'll treat
+            // it as a failed save and throw an exception.
+            if (!$result) {
+                throw new SaveFailedException(sprintf('Could not save model [%s]. Reason: Save returned false.', get_class($this)));
+            }
+        } catch (Exception $e) {
+            // Catch exceptions and re-throw
+            // as our Nodes "save failed" exceptions
+            throw new SaveFailedException(sprintf('Could not save model [%s]. Reason: %s', get_class($this), $e->getMessage()));
+        } catch (Throwable $e) {
+            // Add support for PHP 7 throwable interface.
+            // Re-throw as our Nodes "save failed" exceptions.
+            throw new SaveFailedException(sprintf('Could not save model [%s]. Reason: %s', get_class($this), $e->getMessage()));
         }
 
-        // If date is older than $maxDays
-        // we'll return the date and time
-        $daysDifference = $date->diffInDays();
-        if ($daysDifference > $maxDays) {
-            return $date->format($format);
-        }
-
-        return $date->diffForHumans();
+        return $result;
     }
 }

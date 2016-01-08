@@ -22,11 +22,11 @@ class SaveFailedException extends NodesException
      * @param  boolean  $report
      * @param  string   $severity
      */
-    public function __construct($message, $code = 446, array $headers = [], $report = false, $severity = 'error')
+    public function __construct($message, $code = 550, array $headers = [], $report = true, $severity = 'error')
     {
         parent::__construct($message, $code, $headers, $report, $severity);
 
         // Set status code and status message
-        $this->setStatusCode(446, 'Could not save to database');
+        $this->setStatusCode(550, 'Could not save to database');
     }
 }
