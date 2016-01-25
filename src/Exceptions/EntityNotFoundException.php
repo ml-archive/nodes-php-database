@@ -28,5 +28,8 @@ class EntityNotFoundException extends NodesException
 
         // Set status code and status message
         $this->setStatusCode(445, 'Entity not found');
+        
+        // Should not report by default
+        $this->dontReport();
     }
 }
