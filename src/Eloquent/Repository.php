@@ -763,7 +763,7 @@ abstract class Repository
         // Let's start off by checking if method exists
         // on our repository builder.
         if (method_exists($this->getBuilder(), $method)) {
-            return call_user_func_array([$this->getBuilder, $method], $parameters);
+            return call_user_func_array([$this->getBuilder(), $method], $parameters);
         }
 
         // Otherwise we'll assume the method exists on our model.
