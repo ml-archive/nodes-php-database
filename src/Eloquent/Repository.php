@@ -535,12 +535,12 @@ abstract class Repository
     {
         // Retrieve all records by entity type and entity ID
         $entities = $this->getBuilder()
-            ->select(['id'])
-            ->where(function($query) use ($entity, $relationName) {
-                $query->where($relationName . '_type', '=', get_class($entity))
-                    ->where($relationName . '_id', '=', (int) $entity->id);
-            })
-            ->get();
+                         ->select(['id'])
+                         ->where(function($query) use ($entity, $relationName) {
+                             $query->where($relationName . '_type', '=', get_class($entity))
+                                   ->where($relationName . '_id', '=', (int) $entity->id);
+                         })
+                         ->get();
 
         // Delete count
         $deleteCount = 0;
@@ -582,13 +582,13 @@ abstract class Repository
 
         // Retrieve all records by entity type and entity ID
         $entities = $this->onlyTrashed()
-            ->getBuilder()
-            ->select(['id'])
-            ->where(function($query) use ($entity, $relationName) {
-                $query->where($relationName . '_type', '=', get_class($entity))
-                    ->where($relationName . '_id', '=', (int) $entity->id);
-            })
-            ->get();
+                         ->getBuilder()
+                         ->select(['id'])
+                         ->where(function($query) use ($entity, $relationName) {
+                             $query->where($relationName . '_type', '=', get_class($entity))
+                                  ->where($relationName . '_id', '=', (int) $entity->id);
+                         })
+                         ->get();
 
         // Restore count
         $restoreCount = 0;
