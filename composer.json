@@ -25,6 +25,9 @@
     "autoload": {
         "psr-4": {
             "Nodes\\Database\\": "src"
-        }
+        },
+        "files": [
+            "src/Support/Helpers/Query.php"
+        ]
     }
 }

@@ -733,6 +733,22 @@ abstract class Repository
     }
 
     /**
+     * Render repository's query SQL string
+     *
+     * @author Morten Rugaard <moru@nodes.dk>
+     *
+     * @access public
+     * @return string
+     */
+    public function renderSql()
+    {
+        return vsprintf(
+            $this->getBuilder()->getQuery()->toSql(),
+            $this->getBuilder()->getQuery()->getBindings()
+        );
+    }
+
+    /**
      * Handle dynamic method calls into the repository builder
      *
      * @author Morten Rugaard <moru@nodes.dk>
