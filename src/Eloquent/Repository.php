@@ -1,12 +1,12 @@
 <?php
 namespace Nodes\Database\Eloquent;
 
-use Illuminate\Database\Eloquent\Model as IlluminateModel;
 use Illuminate\Database\Eloquent\Builder as IlluminateEloquentBuilder;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Query\Builder as QueryBuilder;
-use Nodes\Exceptions\Exception as NodesException;
+use Illuminate\Database\Eloquent\Model as IlluminateEloquentModel;
+use Illuminate\Database\Eloquent\SoftDeletes as IlluminateEloquentSoftDeletes;
 use Nodes\Database\Exceptions\EntityNotFoundException;
+use Nodes\Database\Exceptions\ModelNotSoftDeletable;
+use Nodes\Exceptions\Exception as NodesException;
 
 /**
  * Class Repository
@@ -14,19 +14,33 @@ use Nodes\Database\Exceptions\EntityNotFoundException;
  * @abstract
  * @package Nodes\Database\Eloquent
  */
-abstract class Repository extends IlluminateEloquentBuilder
+abstract class Repository
 {
     /**
-     * Setup repostitory to work with provided model
+     * Repository model
      *
-     * @author Morten Rugaard <moru@odes.dk>
+     * @var \Illuminate\Database\Eloquent\Model
+     */
+    protected $model;
+
+    /**
+     * Repository builder
+     *
+     * @var \Illuminate\Database\Eloquent\Builder
+     */
+    protected $builder;
+
+    /**
+     * setupRepository
+     *
+     * @author Morten Rugaard <moru@nodes.dk>
      *
      * @access public
      * @param  \Illuminate\Database\Eloquent\Model $model
+     * @return void
      */
-    public function setupRepository(IlluminateModel $model)
+    public function setupRepository(IlluminateEloquentModel $model)
     {
-        $this->setBuilder($model->newQuery()->getQuery());
         $this->setModel($model);
     }
 
@@ -42,9 +56,8 @@ abstract class Repository extends IlluminateEloquentBuilder
      */
     public function newInstance(array $attributes = [])
     {
-        return $this->model->newInstance($attributes);
+        return $this->getModel()->newInstance($attributes);
     }
-
     /**
      * Generate a new instance and saves it
      *
@@ -56,7 +69,245 @@ abstract class Repository extends IlluminateEloquentBuilder
      */
     public function create(array $attributes = [])
     {
-        return $this->model->create($attributes);
+        return $this->getModel()->create($attributes);
+    }
+
+    /**
+     * Execute the query and get the first result
+     *
+     * @author Morten Rugaard <moru@nodes.dk>
+     *
+     * @access public
+     * @param  array $columns
+     * @return \Illuminate\Database\Eloquent\Model
+     */
+    public function first($columns = ['*'])
+    {
+        $result = $this->getBuilder()->first($columns);
+
+        // Reset query builder
+        $this->resetBuilder();
+
+        return $result;
+    }
+
+    /**
+     * Execute the query and get the first result or throw an exception
+     *
+     * @author Morten Rugaard <moru@nodes.dk>
+     *
+     * @access public
+     * @param  array $columns
+     * @return \Illuminate\Database\Eloquent\Model
+     * @throws \Nodes\Database\Exceptions\EntityNotFoundException
+     */
+    public function firstOrFail($columns = ['*'])
+    {
+        $result = $this->first($columns);
+        if (empty($result)) {
+            throw new EntityNotFoundException('Entity not found');
+        }
+
+        return $result;
+    }
+
+    /**
+     * Execute the query and retrieve result
+     *
+     * @author Morten Rugaard <moru@nodes.dk>
+     *
+     * @access public
+     * @param  array $columns
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function get($columns = ['*'])
+    {
+        $result = $this->getBuilder()->get($columns);
+
+        // Reset query builder
+        $this->resetBuilder();
+
+        return $result;
+    }
+
+    /**
+     * Execute query as a count statement
+     *
+     * @author Morten Rugaard <moru@nodes.dk>
+     *
+     * @access public
+     * @param  string $columns
+     * @return integer
+     */
+    public function count($columns = '*')
+    {
+        $result = $this->getBuilder()->count($columns);
+
+        // Reset query builder
+        $this->resetBuilder();
+
+        return (int) $result;
+    }
+
+    /**
+     * Execute the query and retrieve an array
+     * with the values of a given column
+     *
+     * @author Morten Rugaard <moru@nodes.dk>
+     *
+     * @access public
+     * @param  string  $column
+     * @param  string  $key
+     * @return array
+     */
+    public function lists($column, $key = null)
+    {
+        $result = $this->getBuilder()->lists($column, $key);
+
+        // Reset query builder
+        $this->resetBuilder();
+
+        return $result;
+    }
+
+    /**
+     * Execute query as an update statement
+     *
+     * @author Morten Rugaard <moru@nodes.dk>
+     *
+     * @access public
+     * @param  array $values
+     * @return integer
+     */
+    public function update(array $values)
+    {
+        $result = $this->getBuilder()->update($values);
+
+        // Reset query builder
+        $this->resetBuilder();
+
+        return (int) $result;
+    }
+
+    /**
+     * Execute query as a delete statement
+     *
+     * @author Morten Rugaard <moru@nodes.dk>
+     *
+     * @access public
+     * @return integer
+     */
+    public function delete()
+    {
+        $result = $this->getBuilder()->delete();
+
+        // Reset query builder
+        $this->resetBuilder();
+
+        return (int) $result;
+    }
+
+    /**
+     * Execute query as a (force) delete statement
+     *
+     * @author Morten Rugaard <moru@nodes.dk>
+     *
+     * @access public
+     * @return integer
+     */
+    public function forceDelete()
+    {
+        $result = $this->getBuilder()->forceDelete();
+
+        // Reset query builder
+        $this->resetBuilder();
+
+        return (int) $result;
+    }
+
+    /**
+     * Increment a column's value by a given amount
+     *
+     * @author Morten Rugaard <moru@nodes.dk>
+     *
+     * @access public
+     * @param  string  $column
+     * @param  integer $amount
+     * @param  array   $extra
+     * @return integer
+     */
+    public function increment($column, $amount = 1, array $extra = array())
+    {
+        $result = $this->getBuilder()->increment($column, $amount, $extra);
+
+        // Reset query builder
+        $this->resetBuilder();
+
+        return (int) $result;
+    }
+
+    /**
+     * Decrement a column's value by a given amount
+     *
+     * @author Morten Rugaard <moru@nodes.dk>
+     *
+     * @access public
+     * @param  string  $column
+     * @param  integer $amount
+     * @param  array   $extra
+     * @return integer
+     */
+    public function decrement($column, $amount = 1, array $extra = array())
+    {
+        $result = $this->getBuilder()->decrement($column, $amount, $extra);
+
+        // Reset query builder
+        $this->resetBuilder();
+
+        return (int) $result;
+    }
+
+    /**
+     * Include soft deleted entries in query
+     *
+     * @author Morten Rugaard <moru@nodes.dk>
+     *
+     * @access public
+     * @throws \Nodes\Database\Exceptions\ModelNotSoftDeletable
+     */
+    public function withTrashed()
+    {
+        // Validate model is soft deletable
+        if (!in_array(IlluminateEloquentSoftDeletes::class, class_uses($this->getModel()))) {
+            throw new ModelNotSoftDeletable('Model [%s] is not using the Soft Delete trait');
+        }
+
+        // Set repository builder to include soft deleted entries
+        $this->setBuilder($this->getModel()->withTrashed());
+
+        return $this;
+    }
+
+    /**
+     * Only include soft deleted entries in query
+     *
+     * @author Morten Rugaard <moru@nodes.dk>
+     *
+     * @access public
+     * @return $this
+     * @throws \Nodes\Database\Exceptions\ModelNotSoftDeletable
+     */
+    public function onlyTrashed()
+    {
+        // Validate model is soft deletable
+        if (!in_array(IlluminateEloquentSoftDeletes::class, class_uses($this->getModel()))) {
+            throw new ModelNotSoftDeletable('Model [%s] is not using the Soft Delete trait');
+        }
+
+        // Set repository builder to include soft deleted entries
+        $this->setBuilder($this->getModel()->onlyTrashed());
+
+        return $this;
     }
 
     /**
@@ -72,13 +323,15 @@ abstract class Repository extends IlluminateEloquentBuilder
      */
     public function getBy($column, $value, array $columns = ['*'])
     {
-        return $this->select($columns)
+        return $this->getBuilder()
+            ->select($columns)
             ->where($column, '=', $value)
             ->first();
     }
 
     /**
      * Retrieve entity by a specific column and value
+     *
      * If entity is not found, we'll throw an exception
      *
      * @author Morten Rugaard <moru@nodes.dk>
@@ -96,11 +349,12 @@ abstract class Repository extends IlluminateEloquentBuilder
         if (empty($entity)) {
             throw new EntityNotFoundException('Entity not found');
         }
+
         return $entity;
     }
 
     /**
-     * Retrieve entity it's ID
+     * Retrieve entity by ID
      *
      * @author Morten Rugaard <moru@nodes.dk>
      *
@@ -111,7 +365,61 @@ abstract class Repository extends IlluminateEloquentBuilder
      */
     public function getById($id, array $columns = ['*'])
     {
-        return $this->getBy('id', (int) $id, $columns);
+        return $this->getBy('id', $id, $columns);
+    }
+
+    /**
+     * Retrieve entity by ID
+     *
+     * If entity is not found, we'll throw an exception
+     *
+     * @author Morten Rugaard <moru@nodes.dk>
+     *
+     * @access public
+     * @param  integer $id
+     * @param  array   $columns
+     * @return \Illuminate\Database\Eloquent\Model
+     * @throws \Nodes\Database\Exceptions\EntityNotFoundException
+     */
+    public function getByIdOrFail($id, array $columns = ['*'])
+    {
+        return $this->getByOrFail('id', $id, $columns);
+    }
+
+    /**
+     * Retrieve entity by ID
+     * (including soft deleted entries)
+     *
+     * If entity is not found, we'll throw an exception
+     *
+     * @author Morten Rugaard <moru@nodes.dk>
+     *
+     * @access public
+     * @param  integer $id
+     * @param  array   $columns
+     * @return \Illuminate\Database\Eloquent\Model
+     * @throws \Nodes\Database\Exceptions\ModelNotSoftDeletable
+     */
+    public function getByIdWithTrashed($id, array $columns = ['*'])
+    {
+        return $this->withTrashed()->getById($id, $columns);
+    }
+
+    /**
+     * Retrieve entity by ID
+     * (including soft deleted entries)
+     *
+     * @author Morten Rugaard <moru@nodes.dk>
+     *
+     * @access public
+     * @param  integer $id
+     * @param  array   $columns
+     * @return \Illuminate\Database\Eloquent\Model
+     * @throws \Nodes\Database\Exceptions\ModelNotSoftDeletable
+     */
+    public function getByIdWithTrashedOrFail($id, array $columns = ['*'])
+    {
+        return $this->withTrashed()->getByIdOrFail($id, $columns);
     }
 
     /**
@@ -211,180 +519,7 @@ abstract class Repository extends IlluminateEloquentBuilder
     }
 
     /**
-     * Retrieve entity by ID.
-     * If entity is not found, we'll throw an exception
-     *
-     * @author Morten Rugaard <moru@nodes.dk>
-     *
-     * @access public
-     * @param  integer $id
-     * @param  array   $columns
-     * @return \Illuminate\Database\Eloquent\Model
-     * @throws \Nodes\Database\Exceptions\EntityNotFoundException
-     */
-    public function getByIdOrFail($id, array $columns = ['*'])
-    {
-        return $this->getByOrFail('id', (int) $id, $columns);
-    }
-
-    /**
-     * Execute the query and get the first result
-     *
-     * @author Morten Rugaard <moru@nodes.dk>
-     *
-     * @access public
-     * @param  array $columns
-     * @return \Illuminate\Database\Eloquent\Model
-     */
-    public function first($columns = ['*'])
-    {
-        $item = parent::first($columns);
-
-        // Reset query builder
-        $this->resetBuilder();
-
-        return $item;
-    }
-
-    /**
-     * Execute the query and get the first result or throw an exception
-     *
-     * @author Morten Rugaard <moru@nodes.dk>
-     *
-     * @access public
-     * @param  array $columns
-     * @return \Illuminate\Database\Eloquent\Model
-     * @throws \Nodes\Database\Exceptions\EntityNotFoundException
-     */
-    public function firstOrFail($columns = ['*'])
-    {
-        $item = $this->first($columns);
-        if (empty($item)) {
-            throw new EntityNotFoundException('Entity not found');
-        }
-
-        return $item;
-    }
-
-    /**
-     * Execute the query and retrieve result
-     *
-     * @author Morten Rugaard <moru@nodes.dk>
-     *
-     * @access public
-     * @param  array $columns
-     * @return \Illuminate\Database\Eloquent\Collection
-     */
-    public function get($columns = ['*'])
-    {
-        $data = parent::get($columns);
-
-        // Reset query builder
-        $this->resetBuilder();
-
-        return $data;
-    }
-
-    /**
-     * Execute query as a count statement
-     *
-     * @author Morten Rugaard <moru@nodes.dk>
-     *
-     * @access public
-     * @param  string $columns
-     * @return integer
-     */
-    public function count($columns = '*')
-    {
-        $count = parent::count($columns);
-
-        // Reset query builder
-        $this->resetBuilder();
-
-        return (int) $count;
-    }
-
-    /**
-     * Execute the query and retrieve an array
-     * with the values of a given column
-     *
-     * @author Morten Rugaard <moru@nodes.dk>
-     *
-     * @access public
-     * @param  string  $column
-     * @param  string  $key
-     * @return array
-     */
-    public function lists($column, $key = null)
-    {
-        $results = parent::lists($column, $key);
-
-        // Reset query builder
-        $this->resetBuilder();
-
-        return $results;
-    }
-
-    /**
-     * Execute query as an update statement
-     *
-     * @author Morten Rugaard <moru@nodes.dk>
-     *
-     * @access public
-     * @param  array $values
-     * @return integer
-     */
-    public function update(array $values)
-    {
-        $result = parent::update($values);
-
-        // Reset query builder
-        $this->resetBuilder();
-
-        return (int) $result;
-    }
-
-    /**
-     * Execute query as a delete statement
-     *
-     * Note: If using Laravel's soft delete trait
-     * this will actually be executed as an update statement
-     *
-     * @author Morten Rugaard <moru@nodes.dk>
-     *
-     * @access public
-     * @return integer
-     */
-    public function delete()
-    {
-        $result = parent::delete();
-
-        // Reset query builder
-        $this->resetBuilder();
-
-        return (int) $result;
-    }
-
-    /**
-     * Execute query as a (force) delete statement
-     *
-     * @author Morten Rugaard <moru@nodes.dk>
-     *
-     * @access public
-     * @return integer
-     */
-    public function forceDelete()
-    {
-        $result = parent::forceDelete();
-
-        // Reset query builder
-        $this->resetBuilder();
-
-        return (int) $result;
-    }
-
-    /**
-     * Delete by entity
+     * Delete morphed relations by entity
      *
      * Note: This should only be used with morphed relations
      *
@@ -396,10 +531,11 @@ abstract class Repository extends IlluminateEloquentBuilder
      * @param  boolean                             $forceDelete
      * @return integer
      */
-    public function deleteAllByEntity(IlluminateModel $entity, $relationName, $forceDelete = false)
+    public function deleteMorphsByEntity(IlluminateEloquentModel $entity, $relationName, $forceDelete = false)
     {
         // Retrieve all records by entity type and entity ID
-        $entities = $this->select(['id'])
+        $entities = $this->getBuilder()
+            ->select(['id'])
             ->where(function($query) use ($entity, $relationName) {
                 $query->where($relationName . '_type', '=', get_class($entity))
                     ->where($relationName . '_id', '=', (int) $entity->id);
@@ -425,91 +561,50 @@ abstract class Repository extends IlluminateEloquentBuilder
     }
 
     /**
-     * Increment a column's value by a given amount
+     * Restore morphed relations by entity
+     *
+     * Note: This should only be used with morphed relations
      *
      * @author Morten Rugaard <moru@nodes.dk>
      *
      * @access public
-     * @param  string  $column
-     * @param  integer $amount
-     * @param  array   $extra
+     * @param  \Illuminate\Database\Eloquent\Model $entity
+     * @param  string                              $relationName
      * @return integer
+     * @throws \Nodes\Database\Exceptions\ModelNotSoftDeletable
      */
-    public function increment($column, $amount = 1, array $extra = array())
+    public function restoreMorphsByEntity(IlluminateEloquentModel $entity, $relationName)
     {
-        $result = parent::increment($column, $amount, $extra);
+        // Validate model is soft deletable
+        if (!in_array(IlluminateEloquentSoftDeletes::class, class_uses($this->getModel()))) {
+            throw new ModelNotSoftDeletable('Model [%s] is not using the Soft Delete trait');
+        }
+
+        // Retrieve all records by entity type and entity ID
+        $entities = $this->onlyTrashed()
+            ->getBuilder()
+            ->select(['id'])
+            ->where(function($query) use ($entity, $relationName) {
+                $query->where($relationName . '_type', '=', get_class($entity))
+                    ->where($relationName . '_id', '=', (int) $entity->id);
+            })
+            ->get();
+
+        // Restore count
+        $restoreCount = 0;
+
+        // Loop through each entity individually.
+        // This is required to soft delete all found entiries.
+        foreach ($entities as $e) {
+            if ((bool) $e->restore()) {
+                $restoreCount += 1;
+            }
+        }
 
         // Reset query builder
         $this->resetBuilder();
 
-        return (int) $result;
-    }
-
-    /**
-     * Decrement a column's value by a given amount
-     *
-     * @author Morten Rugaard <moru@nodes.dk>
-     *
-     * @access public
-     * @param  string  $column
-     * @param  integer $amount
-     * @param  array   $extra
-     * @return integer
-     */
-    public function decrement($column, $amount = 1, array $extra = array())
-    {
-        $result = parent::decrement($column, $amount, $extra);
-
-        // Reset query builder
-        $this->resetBuilder();
-
-        return (int) $result;
-    }
-
-    /**
-     * Include soft deleted entries in query
-     *
-     * @author Morten Rugaard <moru@nodes.dk>
-     *
-     * @access public
-     * @return $this
-     */
-    public function withTrashed()
-    {
-        // Make sure model implements the soft delete trait
-        if (!in_array(SoftDeletes::class, class_uses($this->getModel()))) {
-            return $this;
-        }
-
-        // Include soft deleted entries in query
-        $this->setQuery(
-            $this->getModel()->withTrashed()->getQuery()
-        );
-
-        return $this;
-    }
-
-    /**
-     * Only return soft deleted entries in query
-     *
-     * @author Morten Rugaard <moru@nodes.dk>
-     *
-     * @access public
-     * @return $this
-     */
-    public function onlyTrashed()
-    {
-        // Make sure model implements the soft delete trait
-        if (!in_array(SoftDeletes::class, class_uses($this->getModel()))) {
-            return $this;
-        }
-
-        // Only include soft deleted entries in query
-        $this->setQuery(
-            $this->getModel()->onlyTrashed()->getQuery()
-        );
-
-        return $this;
+        return $restoreCount;
     }
 
     /**
@@ -522,7 +617,7 @@ abstract class Repository extends IlluminateEloquentBuilder
      */
     public function beginTransaction()
     {
-        return $this->getBuilder()->getConnection()->beginTransaction();
+        return $this->getBuilder()->getQuery()->getConnection()->beginTransaction();
     }
 
     /**
@@ -535,7 +630,7 @@ abstract class Repository extends IlluminateEloquentBuilder
      */
     public function commitTransaction()
     {
-        return $this->getBuilder()->getConnection()->commit();
+        return $this->getBuilder()->getQuery()->getConnection()->commit();
     }
 
     /**
@@ -548,26 +643,31 @@ abstract class Repository extends IlluminateEloquentBuilder
      */
     public function rollbackTransaction()
     {
-        return $this->getBuilder()->getConnection()->rollBack();
+        return $this->getBuilder()->getQuery()->getConnection()->rollBack();
     }
 
     /**
-     * Set model of repository
+     * Set repository model
      *
      * @author Morten Rugaard <moru@nodes.dk>
      *
      * @access public
      * @param  \Illuminate\Database\Eloquent\Model $model
-     * @return \Nodes\Database\Eloquent\Repository
+     * @return $this
      */
-    public function setModel(IlluminateModel $model)
+    public function setModel(IlluminateEloquentModel $model)
     {
-        parent::setModel($model);
+        // Set repository model
+        $this->model = $model;
+
+        // Set repository builder from model
+        $this->setBuilder($model->newQuery());
+
         return $this;
     }
 
     /**
-     * Retrieve model of repository
+     * Retrieve repository model
      *
      * @author Morten Rugaard <moru@nodes.dk>
      *
@@ -580,35 +680,43 @@ abstract class Repository extends IlluminateEloquentBuilder
     }
 
     /**
-     * Set repositorys query builder
+     * Set repository builder
      *
      * @author Morten Rugaard <moru@nodes.dk>
      *
-     * @access public
-     * @param  \Illuminate\Database\Query\Builder $query
+     * @acecss public
+     * @param  \Illuminate\Database\Eloquent\Builder $builder
      * @return $this
      */
-    public function setBuilder(QueryBuilder $query)
+    public function setBuilder(IlluminateEloquentBuilder $builder = null)
     {
-        parent::setQuery($query);
+        // If no builder was provided,
+        // we'll use the one from this repositorys model
+        if (empty($builder)) {
+            $builder = $this->getModel()->newQuery();
+        }
+
+        // Set repository builder
+        $this->builder = $builder;
+
         return $this;
     }
 
     /**
-     * Retrieve repository's query builder
+     * Retrieve repository builder
      *
      * @author Morten Rugaard <moru@nodes.dk>
      *
      * @access public
-     * @return \Illuminate\Database\Query\Builder
+     * @return \Illuminate\Database\Eloquent\Builder
      */
     public function getBuilder()
     {
-        return $this->query;
+        return $this->builder;
     }
 
     /**
-     * Reset query builder
+     * Reset repository builder
      *
      * @author Morten Rugaard <moru@nodes.dk>
      *
@@ -617,23 +725,49 @@ abstract class Repository extends IlluminateEloquentBuilder
      */
     public function resetBuilder()
     {
-        // Generate new query builder
-        $builder = $this->getModel()->newQuery()->getQuery();
-        $this->setBuilder($builder);
+        // Generate a new repository builder
+        // from this repositorys model
+        $this->setBuilder($this->getModel()->newQuery());
+
         return $this;
     }
 
     /**
-     * Generated SQL with inserted bindings
+     * Render repository's query SQL string
      *
      * @author Morten Rugaard <moru@nodes.dk>
      *
      * @access public
-     * @param  \Illuminate\Database\Query\Builder $query
      * @return string
      */
-    public function renderSql(QueryBuilder $query)
+    public function renderSql()
     {
-        return vsprintf($query->toSql(), $query->getBindings());
+        return vsprintf(
+            $this->getBuilder()->getQuery()->toSql(),
+            $this->getBuilder()->getQuery()->getBindings()
+        );
+    }
+
+    /**
+     * Handle dynamic method calls into the repository builder
+     *
+     * @author Morten Rugaard <moru@nodes.dk>
+     *
+     * @access public
+     * @param  string $method
+     * @param  array  $parameters
+     * @return mixed
+     */
+    public function __call($method, $parameters)
+    {
+        // Let's start off by checking if method exists
+        // on our repository builder.
+        if (method_exists($this->getBuilder(), $method)) {
+            return call_user_func_array([$this->getBuilder, $method], $parameters);
+        }
+
+        // Otherwise we'll assume the method exists on our model.
+        // If not, it'll throw an exception/error for the user
+        return call_user_func_array([$this->getModel(), $method], $parameters);
     }
 }
