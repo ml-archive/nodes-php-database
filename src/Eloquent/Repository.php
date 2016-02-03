@@ -73,6 +73,23 @@ abstract class Repository
     }
 
     /**
+     * Set the relationships that should be eager loaded
+     *
+     * @author Morten Rugaard <moru@nodes.dk>
+     *
+     * @access public
+     * @param  mixed $relations
+     * @return $this
+     */
+    public function with($relations)
+    {
+        // Eager load relations
+        $this->getBuilder()->with($relations);
+
+        return $this;
+    }
+
+    /**
      * Execute the query and get the first result
      *
      * @author Morten Rugaard <moru@nodes.dk>
@@ -323,10 +340,15 @@ abstract class Repository
      */
     public function getBy($column, $value, array $columns = ['*'])
     {
-        return $this->getBuilder()
-            ->select($columns)
-            ->where($column, '=', $value)
-            ->first();
+        $result = $this->getBuilder()
+                       ->select($columns)
+                       ->where($column, '=', $value)
+                       ->first();
+
+        // Reset query builder
+        $this->resetBuilder();
+
+        return $result;
     }
 
     /**
@@ -535,12 +557,12 @@ abstract class Repository
     {
         // Retrieve all records by entity type and entity ID
         $entities = $this->getBuilder()
-            ->select(['id'])
-            ->where(function($query) use ($entity, $relationName) {
-                $query->where($relationName . '_type', '=', get_class($entity))
-                    ->where($relationName . '_id', '=', (int) $entity->id);
-            })
-            ->get();
+                         ->select(['id'])
+                         ->where(function($query) use ($entity, $relationName) {
+                             $query->where($relationName . '_type', '=', get_class($entity))
+                                   ->where($relationName . '_id', '=', (int) $entity->id);
+                         })
+                         ->get();
 
         // Delete count
         $deleteCount = 0;
@@ -582,13 +604,13 @@ abstract class Repository
 
         // Retrieve all records by entity type and entity ID
         $entities = $this->onlyTrashed()
-            ->getBuilder()
-            ->select(['id'])
-            ->where(function($query) use ($entity, $relationName) {
-                $query->where($relationName . '_type', '=', get_class($entity))
-                    ->where($relationName . '_id', '=', (int) $entity->id);
-            })
-            ->get();
+                         ->getBuilder()
+                         ->select(['id'])
+                         ->where(function($query) use ($entity, $relationName) {
+                             $query->where($relationName . '_type', '=', get_class($entity))
+                                  ->where($relationName . '_id', '=', (int) $entity->id);
+                         })
+                         ->get();
 
         // Restore count
         $restoreCount = 0;
