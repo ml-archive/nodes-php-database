@@ -73,6 +73,23 @@ abstract class Repository
     }
 
     /**
+     * Set the relationships that should be eager loaded
+     *
+     * @author Morten Rugaard <moru@nodes.dk>
+     *
+     * @access public
+     * @param  mixed $relations
+     * @return $this
+     */
+    public function with($relations)
+    {
+        // Eager load relations
+        $this->getBuilder()->with($relations);
+
+        return $this;
+    }
+
+    /**
      * Execute the query and get the first result
      *
      * @author Morten Rugaard <moru@nodes.dk>
@@ -323,10 +340,15 @@ abstract class Repository
      */
     public function getBy($column, $value, array $columns = ['*'])
     {
-        return $this->getBuilder()
-            ->select($columns)
-            ->where($column, '=', $value)
-            ->first();
+        $result = $this->getBuilder()
+                       ->select($columns)
+                       ->where($column, '=', $value)
+                       ->first();
+
+        // Reset query builder
+        $this->resetBuilder();
+
+        return $result;
     }
 
     /**
