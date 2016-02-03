@@ -1,9 +1,12 @@
 <?php
 namespace Nodes\Database\Eloquent;
 
+use Closure;
 use Illuminate\Database\Eloquent\Builder as IlluminateEloquentBuilder;
 use Illuminate\Database\Eloquent\Model as IlluminateEloquentModel;
+use Illuminate\Database\Eloquent\Relations\Relation as IlluminateEloquentRelation;
 use Illuminate\Database\Eloquent\SoftDeletes as IlluminateEloquentSoftDeletes;
+use Illuminate\Database\Query\Builder as IlluminateQueryBuilder;
 use Nodes\Database\Exceptions\EntityNotFoundException;
 use Nodes\Database\Exceptions\ModelNotSoftDeletable;
 use Nodes\Exceptions\Exception as NodesException;
@@ -13,6 +16,91 @@ use Nodes\Exceptions\Exception as NodesException;
  *
  * @abstract
  * @package Nodes\Database\Eloquent
+ *
+ * @see Illuminate\Database\Eloquent\Builder
+ * @method IlluminateEloquentBuilder withGlobalScope($identifier, $scope)
+ * @method IlluminateEloquentBuilder withoutGlobalScope($scope)
+ * @method IlluminateEloquentBuilder withoutGlobalScopes(array $scopes = null)
+ * @method void onDelete(Closure $callback)
+ * @method IlluminateEloquentModel[] getModels($columns = ['*'])
+ * @method array eagerLoadRelations(array $models)
+ * @method IlluminateEloquentRelation getRelation($name)
+ * @method IlluminateEloquentBuilder|static has($relation, $operator = '>=', $count = 1, $boolean = 'and', Closure $callback = null)
+ * @method IlluminateEloquentBuilder|static doesntHave($relation, $boolean = 'and', Closure $callback = null)
+ * @method IlluminateEloquentBuilder|static whereHas($relation, Closure $callback, $operator = '>=', $count = 1)
+ * @method IlluminateEloquentBuilder|static function whereDoesntHave($relation, Closure $callback = null)
+ * @method IlluminateEloquentBuilder|static orHas($relation, $operator = '>=', $count = 1)
+ * @method IlluminateEloquentBuilder|static orWhereHas($relation, Closure $callback, $operator = '>=', $count = 1)
+ * @method IlluminateEloquentBuilder|static applyScopes()
+ * @method IlluminateEloquentBuilder|static applyScope($scope, $builder)
+ * @method IlluminateQueryBuilder toBase()
+ * @method IlluminateEloquentBuilder setQuery($query)
+ * @method array getEagerLoads()
+ * @method IlluminateEloquentBuilder setEagerLoads(array $eagerLoad)
+ * @method void macro($name, Closure $callback)
+ * @method Closure getMacro($name)
+ *
+ * @see Illuminate\Database\Query\Builder
+ * @method IlluminateEloquentBuilder select($columns = ['*'])
+ * @method IlluminateEloquentBuilder|static selectRaw($expression, array $bindings = [])
+ * @method IlluminateEloquentBuilder|static selectSub($query, $as)
+ * @method IlluminateEloquentBuilder addSelect($column)
+ * @method IlluminateEloquentBuilder distinct()
+ * @method IlluminateEloquentBuilder from($table)
+ * @method IlluminateEloquentBuilder join($table, $one, $operator = null, $two = null, $type = 'inner', $where = false)
+ * @method IlluminateEloquentBuilder joinWhere($table, $one, $operator, $two, $type = 'inner')
+ * @method IlluminateEloquentBuilder leftJoin($table, $first, $operator = null, $second = null)
+ * @method IlluminateEloquentBuilder leftJoinWhere($table, $one, $operator, $two)
+ * @method IlluminateEloquentBuilder rightJoin($table, $first, $operator = null, $second = null)
+ * @method IlluminateEloquentBuilder rightJoinWhere($table, $one, $operator, $two)
+ * @method IlluminateEloquentBuilder whereRaw($sql, array $bindings = [], $boolean = 'and')
+ * @method IlluminateEloquentBuilder orWhereRaw($sql, array $bindings = [])
+ * @method IlluminateEloquentBuilder whereBetween($column, array $values, $boolean = 'and', $not = false)
+ * @method IlluminateEloquentBuilder orWhereBetween($column, array $values)
+ * @method IlluminateEloquentBuilder whereNotBetween($column, array $values, $boolean = 'and')
+ * @method IlluminateEloquentBuilder orWhereNotBetween($column, array $values)
+ * @method IlluminateEloquentBuilder whereNested(Closure $callback, $boolean = 'and')
+ * @method IlluminateEloquentBuilder forNestedWhere()
+ * @method IlluminateEloquentBuilder addNestedWhereQuery($query, $boolean = 'and')
+ * @method IlluminateEloquentBuilder whereSub($column, $operator, Closure $callback, $boolean)
+ * @method IlluminateEloquentBuilder whereExists(Closure $callback, $boolean = 'and', $not = false)
+ * @method IlluminateEloquentBuilder orWhereExists(Closure $callback, $not = false)
+ * @method IlluminateEloquentBuilder whereNotExists(Closure $callback, $boolean = 'and')
+ * @method IlluminateEloquentBuilder orWhereNotExists(Closure $callback)
+ * @method IlluminateEloquentBuilder addWhereExistsQuery(Builder $query, $boolean = 'and', $not = false)
+ * @method IlluminateEloquentBuilder whereIn($column, $values, $boolean = 'and', $not = false)
+ * @method IlluminateEloquentBuilder orWhereIn($column, $values)
+ * @method IlluminateEloquentBuilder whereNotIn($column, $values, $boolean = 'and')
+ * @method IlluminateEloquentBuilder orWhereNotIn($column, $values)
+ * @method IlluminateEloquentBuilder whereNull($column, $boolean = 'and', $not = false)
+ * @method IlluminateEloquentBuilder orWhereNull($column)
+ * @method IlluminateEloquentBuilder whereNotNull($column, $boolean = 'and')
+ * @method IlluminateEloquentBuilder orWhereNotNull($column)
+ * @method IlluminateEloquentBuilder whereDate($column, $operator, $value, $boolean = 'and')
+ * @method IlluminateEloquentBuilder orWhereDate($column, $operator, $value)
+ * @method IlluminateEloquentBuilder whereDay($column, $operator, $value, $boolean = 'and')
+ * @method IlluminateEloquentBuilder whereMonth($column, $operator, $value, $boolean = 'and')
+ * @method IlluminateEloquentBuilder whereYear($column, $operator, $value, $boolean = 'and')
+ * @method IlluminateEloquentBuilder dynamicWhere($method, $parameters)
+ * @method IlluminateEloquentBuilder groupBy()
+ * @method IlluminateEloquentBuilder having($column, $operator = null, $value = null, $boolean = 'and')
+ * @method IlluminateEloquentBuilder orHaving($column, $operator = null, $value = null)
+ * @method IlluminateEloquentBuilder havingRaw($sql, array $bindings = [], $boolean = 'and')
+ * @method IlluminateEloquentBuilder orHavingRaw($sql, array $bindings = [])
+ * @method IlluminateEloquentBuilder orderBy($column, $direction = 'asc')
+ * @method IlluminateEloquentBuilder latest($column = 'created_at')
+ * @method IlluminateEloquentBuilder oldest($column = 'created_at')
+ * @method IlluminateEloquentBuilder orderByRaw($sql, $bindings = [])
+ * @method IlluminateEloquentBuilder offset($value)
+ * @method IlluminateEloquentBuilder skip($value)
+ * @method IlluminateEloquentBuilder limit($value)
+ * @method IlluminateEloquentBuilder take($value)
+ * @method IlluminateEloquentBuilder forPage($page, $perPage = 15)
+ * @method IlluminateEloquentBuilder union($query, $all = false)
+ * @method IlluminateEloquentBuilder unionAll($query)
+ * @method IlluminateEloquentBuilder lock($value = true)
+ * @method IlluminateEloquentBuilder lockForUpdate()
+ * @method IlluminateEloquentBuilder sharedLock()
  */
 abstract class Repository
 {
@@ -110,7 +198,7 @@ abstract class Repository
 
     /**
      * Execute the query and get the first result or throw an exception
-     *
+     *l
      * @author Morten Rugaard <moru@nodes.dk>
      *
      * @access public
@@ -148,6 +236,203 @@ abstract class Repository
     }
 
     /**
+     * Paginate the given query into a simple paginator
+     *
+     * @author Morten Rugaard <moru@nodes.dk>
+     *
+     * @access public
+     * @param  integer $perPage
+     * @param  array   $columns
+     * @param  string  $pageName
+     * @param  integer $page
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     */
+    public function paginate($perPage = 15, $columns = ['*'], $pageName = 'page', $page = null)
+    {
+        $result = $this->getBuilder()->paginate($perPage, $columns, $pageName, $page);
+
+        // Reset query builder
+        $this->resetBuilder();
+
+        return $result;
+    }
+
+    /**
+     * Get a paginator only supporting simple next and previous links
+     *
+     * This is more efficient on larger data-sets, etc.
+     *
+     * @author Morten Rugaard <moru@nodes.dk>
+     *
+     * @access public
+     * @param  integer $perPage
+     * @param  array   $columns
+     * @param  string  $pageName
+     * @return \Illuminate\Contracts\Pagination\Paginator
+     */
+    public function simplePaginate($perPage = 15, $columns = ['*'], $pageName = 'page')
+    {
+        $result = $this->getBuilder()->simplePaginate($perPage, $columns, $pageName);
+
+        // Reset query builder
+        $this->resetBuilder();
+
+        return $result;
+    }
+
+    /**
+     * Get the count of the total records for the paginator
+     *
+     * @author Morten Rugaard <moru@nodes.dk>
+     *
+     * @access public
+     * @param  array $columns
+     * @return integer
+     */
+    public function getCountForPagination($columns = ['*'])
+    {
+        $result = $this->getBuilder()->getCountForPagination($columns);
+
+        // Reset query builder
+        $this->resetBuilder();
+
+        return $result;
+    }
+
+    /**
+     * Get a single column's value from the first result of a query
+     *
+     * @author Morten Rugaard <moru@nodes.dk>
+     *
+     * @access public
+     * @param  string $column
+     * @return mixed
+     */
+    public function value($column)
+    {
+        $result = $this->getBuilder()->value($column);
+
+        // Reset query builder
+        $this->resetBuilder();
+
+        return $result;
+    }
+
+    /**
+     * Chunk the results of the query
+     *
+     * @author Morten Rugaard <moru@nodes.dk>
+     *
+     * @access public
+     * @param  integer  $count
+     * @param  callable $callback
+     * @return boolean
+     */
+    public function chunk($count, callable $callback)
+    {
+        $result = $this->getBuilder()->chunk($count, $callback);
+
+        // Reset query builder
+        $this->resetBuilder();
+
+        return $result;
+    }
+
+    /**
+     * Execute a callback over each item while chunking
+     *
+     * @author Morten Rugaard <moru@nodes.dk>
+     *
+     * @access public
+     * @param  callable $callback
+     * @param  integer  $count
+     * @return boolean
+     * @throws \RuntimeException
+     */
+    public function each(callable $callback, $count = 1000)
+    {
+        $result = $this->getBuilder()->each($callback, $count);
+
+        // Reset query builder
+        $this->resetBuilder();
+
+        return $result;
+    }
+
+    /**
+     * Get an array with the values of a given column
+     *
+     * @author Morten Rugaard <moru@nodes.dk>
+     *
+     * @access public
+     * @param  string  $column
+     * @param  string  $key
+     * @return array
+     */
+    public function pluck($column, $key = null)
+    {
+        $result = $this->getBuilder()->pluck($column, $key);
+
+        // Reset query builder
+        $this->resetBuilder();
+
+        return $result;
+    }
+
+    /**
+     * Alias for the "pluck" method
+     *
+     * @author Morten Rugaard <moru@nodes.dk>
+     *
+     * @access public
+     * @param  string  $column
+     * @param  string  $key
+     * @return array
+     */
+    public function lists($column, $key = null)
+    {
+        return $this->pluck($column, $key);
+    }
+
+    /**
+     * Concatenate values of a given column as a string
+     *
+     * @author Morten Rugaard <moru@nodes.dk>
+     *
+     * @access public
+     * @param  string  $column
+     * @param  string  $glue
+     * @return string
+     */
+    public function implode($column, $glue = '')
+    {
+        $result = $this->getBuilder()->implode($column, $glue);
+
+        // Reset query builder
+        $this->resetBuilder();
+
+        return $result;
+    }
+
+    /**
+     * Determine if any rows exist for the current query
+     *
+     * @author Morten Rugaard <moru@nodes.dk>
+     *
+     * @access public
+     * @return boolean
+     */
+    public function exists()
+    {
+        $result = $this->getBuilder()->exists();
+
+        // Reset query builder
+        $this->resetBuilder();
+
+        return $result;
+    }
+
+    /**
      * Execute query as a count statement
      *
      * @author Morten Rugaard <moru@nodes.dk>
@@ -167,19 +452,129 @@ abstract class Repository
     }
 
     /**
-     * Execute the query and retrieve an array
-     * with the values of a given column
+     * Retrieve the minimum value of a given column
      *
      * @author Morten Rugaard <moru@nodes.dk>
      *
      * @access public
-     * @param  string  $column
-     * @param  string  $key
-     * @return array
+     * @param  string $column
+     * @return float|integer
      */
-    public function lists($column, $key = null)
+    public function min($column)
     {
-        $result = $this->getBuilder()->lists($column, $key);
+        return $this->aggregate(__FUNCTION__, [$column]);
+    }
+
+    /**
+     * Retrieve the maximum value of a given column
+     *
+     * @author Morten Rugaard <moru@nodes.dk>
+     *
+     * @access public
+     * @param  string $column
+     * @return float|integer
+     */
+    public function max($column)
+    {
+        return $this->aggregate(__FUNCTION__, [$column]);
+    }
+
+    /**
+     * Retrieve the sum of the values of a given column
+     *
+     * @author Morten Rugaard <moru@nodes.dk>
+     *
+     * @access public
+     * @param  string $column
+     * @return float|integer
+     */
+    public function sum($column)
+    {
+        $result = $this->aggregate(__FUNCTION__, [$column]);
+
+        return $result ?: 0;
+    }
+
+    /**
+     * Retrieve the average of the values of a given column
+     *
+     * @author Morten Rugaard <moru@nodes.dk>
+     *
+     * @access public
+     * @param  string $column
+     * @return float|integer
+     */
+    public function avg($column)
+    {
+        return $this->aggregate(__FUNCTION__, [$column]);
+    }
+
+    /**
+     * Alias for the "avg" method
+     *
+     * @author Morten Rugaard <moru@nodes.dk>
+     *
+     * @access public
+     * @param  string $column
+     * @return float|integer
+     */
+    public function average($column)
+    {
+        return $this->avg($column);
+    }
+
+    /**
+     * Execute an aggregate function on the database
+     *
+     * @author Morten Rugaard <moru@nodes.dk>
+     *
+     * @access public
+     * @param  string $function
+     * @param  array  $columns
+     * @return float|integer
+     */
+    public function aggregate($function, $columns = ['*'])
+    {
+        $result = $this->getBuilder()->aggregate($function, $columns);
+
+        // Reset query builder
+        $this->resetBuilder();
+
+        return $result;
+    }
+
+    /**
+     * Insert a new record into the database
+     *
+     * @author Morten Rugaard <moru@nodes.dk>
+     *
+     * @access public
+     * @param  array $values
+     * @return boolean
+     */
+    public function insert(array $values)
+    {
+        $result = $this->getBuilder()->insert($values);
+
+        // Reset query builder
+        $this->resetBuilder();
+
+        return $result;
+    }
+
+    /**
+     * Insert a new record and get the value of the primary key
+     *
+     * @author Morten Rugaard <moru@nodes.dk>
+     *
+     * @access public
+     * @param  array  $values
+     * @param  string $sequence
+     * @return integer
+     */
+    public function insertGetId(array $values, $sequence = null)
+    {
+        $result = $this->getBuilder()->insertGetId($values, $sequence);
 
         // Reset query builder
         $this->resetBuilder();
@@ -285,6 +680,80 @@ abstract class Repository
     }
 
     /**
+     * Run a truncate statement on the table
+     *
+     * @author Morten Rugaard <moru@nodes.dk>
+     *
+     * @access public
+     * @return void
+     */
+    public function truncate()
+    {
+        $this->getBuilder()->truncate();
+
+        // Reset query builder
+        $this->resetBuilder();
+    }
+
+    /**
+     * Create a raw database expression
+     *
+     * @author Morten Rugaard <moru@nodes.dk>
+     *
+     * @access public
+     * @param  mixed  $value
+     * @return \Illuminate\Database\Query\Expression
+     */
+    public function raw($value)
+    {
+        $result = $this->getBuilder()->raw($value);
+
+        // Reset query builder
+        $this->resetBuilder();
+
+        return $result;
+    }
+
+    /**
+     * Get the SQL representation of the query
+     *
+     * @author Morten Rugaard <moru@nodes.dk>
+     *
+     * @access public
+     * @return string
+     */
+    public function toSql()
+    {
+        $result = $this->getBuilder()->toSql();
+
+        // Reset query builder
+        $this->resetBuilder();
+
+        return $result;
+    }
+
+    /**
+     * Render repository's query SQL string
+     *
+     * @author Morten Rugaard <moru@nodes.dk>
+     *
+     * @access public
+     * @return string
+     */
+    public function renderSql()
+    {
+        $result = vsprintf(
+            $this->getBuilder()->getQuery()->toSql(),
+            $this->getBuilder()->getQuery()->getBindings()
+        );
+
+        // Reset query builder
+        $this->resetBuilder();
+
+        return $result;
+    }
+
+    /**
      * Include soft deleted entries in query
      *
      * @author Morten Rugaard <moru@nodes.dk>
@@ -325,6 +794,71 @@ abstract class Repository
         $this->setBuilder($this->getModel()->onlyTrashed());
 
         return $this;
+    }
+
+    /**
+     * Find a model by its primary key
+     *
+     * @author Morten Rugaard <moru@nodes.dk>
+     *
+     * @access public
+     * @param  mixed  $id
+     * @param  array  $columns
+     * @return \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Collection|null
+     */
+    public function find($id, array $columns = ['*'])
+    {
+        if (is_array($id)) {
+            return $this->findMany($id, $columns);
+        }
+
+        return $this->getBy($this->getModel()->getQualifiedKeyName(), $id, $columns);
+    }
+
+    /**
+     * Find a model by its primary key
+     *
+     * @author Morten Rugaard <moru@nodes.dk>
+     *
+     * @param  array  $ids
+     * @param  array  $columns
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function findMany($ids, array $columns = ['*'])
+    {
+        if (empty($ids)) {
+            return $this->model->newCollection();
+        }
+
+        $this->getBuilder()->whereIn($this->getModel()->getQualifiedKeyName(), $ids);
+
+        return $this->get($columns);
+    }
+
+    /**
+     * Find a model by its primary key or throw an exception
+     *
+     * @author Morten Rugaard <moru@nodes.dk>
+     *
+     * @access public
+     * @param  mixed  $id
+     * @param  array  $columns
+     * @return \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Collection
+     * @throws \Nodes\Database\Exceptions\EntityNotFoundException
+     */
+    public function findOrFail($id, $columns = ['*'])
+    {
+        $result = $this->find($id, $columns);
+
+        if (is_array($id)) {
+            if (count($result) == count(array_unique($id))) {
+                return $result;
+            }
+        } elseif (!is_null($result)) {
+            return $result;
+        }
+
+        throw new EntityNotFoundException('Entity not found');
     }
 
     /**
@@ -747,27 +1281,10 @@ abstract class Repository
      */
     public function resetBuilder()
     {
-        // Generate a new repository builder
-        // from this repositorys model
+        // Generate a new query builder from repositorys model
         $this->setBuilder($this->getModel()->newQuery());
 
         return $this;
-    }
-
-    /**
-     * Render repository's query SQL string
-     *
-     * @author Morten Rugaard <moru@nodes.dk>
-     *
-     * @access public
-     * @return string
-     */
-    public function renderSql()
-    {
-        return vsprintf(
-            $this->getBuilder()->getQuery()->toSql(),
-            $this->getBuilder()->getQuery()->getBindings()
-        );
     }
 
     /**
@@ -778,18 +1295,11 @@ abstract class Repository
      * @access public
      * @param  string $method
      * @param  array  $parameters
-     * @return mixed
+     * @return $this
      */
     public function __call($method, $parameters)
     {
-        // Let's start off by checking if method exists
-        // on our repository builder.
-        if (method_exists($this->getBuilder(), $method)) {
-            return call_user_func_array([$this->getBuilder(), $method], $parameters);
-        }
-
-        // Otherwise we'll assume the method exists on our model.
-        // If not, it'll throw an exception/error for the user
-        return call_user_func_array([$this->getModel(), $method], $parameters);
+        call_user_func_array([$this->getBuilder(), $method], $parameters);
+        return $this;
     }
 }
