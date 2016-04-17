@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Relations\Relation as IlluminateEloquentRelatio
 use Illuminate\Database\Eloquent\SoftDeletes as IlluminateEloquentSoftDeletes;
 use Illuminate\Database\Query\Builder as IlluminateQueryBuilder;
 use Nodes\Database\Exceptions\EntityNotFoundException;
-use Nodes\Database\Exceptions\ModelNotSoftDeletable;
 use Nodes\Exceptions\Exception as NodesException;
 
 /**
@@ -210,7 +209,7 @@ abstract class Repository
     {
         $result = $this->first($columns);
         if (empty($result)) {
-            throw new EntityNotFoundException('Entity not found');
+            throw new EntityNotFoundException(sprintf('First record for table [%s] not found', get_class($this->model)));
         }
 
         return $result;
@@ -903,7 +902,8 @@ abstract class Repository
     {
         $entity = $this->getBy($column, $value, $columns);
         if (empty($entity)) {
-            throw new EntityNotFoundException('Entity not found');
+            throw new EntityNotFoundException(sprintf('%s not found for column [%s] with value [%s]',
+                get_class($this->getModel()), $column, $value));
         }
 
         return $entity;
@@ -1068,7 +1068,8 @@ abstract class Repository
     {
         $result = $this->getByContinuously('id', $id, $columns, $retries, $delayMs);
         if (!empty($result)) {
-            throw new EntityNotFoundException('Entity not found');
+            throw new EntityNotFoundException(sprintf('%s not found continuously by Id with value [%s]',
+                get_class($this->getModel()), $id));
         }
 
         return $result;
