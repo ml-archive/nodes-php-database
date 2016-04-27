@@ -461,7 +461,12 @@ abstract class Repository
      */
     public function min($column)
     {
-        return $this->aggregate(__FUNCTION__, [$column]);
+        $result = $this->getBuilder()->min($column);
+
+        // Reset query builder
+        $this->resetBuilder();
+
+        return $result;
     }
 
     /**
@@ -475,7 +480,12 @@ abstract class Repository
      */
     public function max($column)
     {
-        return $this->aggregate(__FUNCTION__, [$column]);
+        $result = $this->getBuilder()->max($column);
+
+        // Reset query builder
+        $this->resetBuilder();
+
+        return $result;
     }
 
     /**
@@ -489,7 +499,10 @@ abstract class Repository
      */
     public function sum($column)
     {
-        $result = $this->aggregate(__FUNCTION__, [$column]);
+        $result = $this->getBuilder()->sum($column);
+
+        // Reset query builder
+        $this->resetBuilder();
 
         return $result ?: 0;
     }
@@ -505,7 +518,12 @@ abstract class Repository
      */
     public function avg($column)
     {
-        return $this->aggregate(__FUNCTION__, [$column]);
+        $result = $this->getBuilder()->avg($column);
+
+        // Reset query builder
+        $this->resetBuilder();
+
+        return $result;
     }
 
     /**
