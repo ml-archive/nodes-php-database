@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\Relation as IlluminateEloquentRelatio
 use Illuminate\Database\Eloquent\SoftDeletes as IlluminateEloquentSoftDeletes;
 use Illuminate\Database\Query\Builder as IlluminateQueryBuilder;
 use Nodes\Database\Exceptions\EntityNotFoundException;
+use Nodes\Database\Exceptions\ModelNotSoftDeletable;
 use Nodes\Exceptions\Exception as NodesException;
 
 /**
@@ -1085,7 +1086,7 @@ abstract class Repository
     public function getByIdContinuouslyOrFail($id, array $columns = ['*'], $retries = 10, $delayMs = 100)
     {
         $result = $this->getByContinuously('id', $id, $columns, $retries, $delayMs);
-        if (!empty($result)) {
+        if (empty($result)) {
             throw new EntityNotFoundException(sprintf('%s not found continuously by Id with value [%s]',
                 get_class($this->getModel()), $id));
         }
