@@ -8,7 +8,19 @@ use Orchestra\Testbench\TestCase as OrchestraTestbench;
 
 class TestCase extends OrchestraTestbench
 {
+    /**
+     * Mocked Illuminate model class
+     *
+     * @var \Mockery\MockInterface
+     */
     protected $model;
+
+    /**
+     * Mocked Nodes repository class
+     *
+     * @var \Mockery\MockInterface
+     */
+    protected $repository;
 
     /**
      * Setup the test environment.
@@ -18,7 +30,11 @@ class TestCase extends OrchestraTestbench
     public function setUp()
     {
         parent::setUp();
+
         $this->model = Mockery::mock(Model::class)->makePartial();
+
+        $this->repository = Mockery::mock(Repository::class)->makePartial();
+        $this->repository->setupRepository($this->model);
     }
 
     /**
@@ -42,12 +58,8 @@ class TestCase extends OrchestraTestbench
      * @access public
      * @return void
      */
-    public function testRepositoryLoadsIlluminateModel()
+    public function testRepositoryReturnsIlluminateModel()
     {
-        $repository = Mockery::mock(Repository::class)->makePartial();
-
-        $repository->setupRepository($this->model);
-
-        $this->assertInstanceOf(Model::class, $repository->getModel());
+        $this->assertInstanceOf(Model::class, $this->repository->getModel());
     }
 }
