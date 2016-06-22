@@ -18,18 +18,30 @@
         }
     ],
     "require": {
-        "laravel/framework": "5.1.*||5.2.*",
+        "php": ">=5.6",
+        "illuminate/support": "5.2.*",
+        "illuminate/database": "5.2.*",
         "nodes/core": "^1.0"
     },
+    "require-dev": {
+        "phpunit/phpunit": "^5.0",
+        "mockery/mockery": "~0.9",
+        "orchestra/testbench": "~3.0"
+    },
     "suggest": {
-        "nodes/counter-cache": "Adds the ruby concept of counter caching to your project"
+        "nodes/counter-cache": "Adds the concept of counter caching to your project"
     },
     "autoload": {
         "psr-4": {
-            "Nodes\\Database\\": "src"
+            "Nodes\\Database\\": "src/"
         },
         "files": [
             "src/Support/Helpers/Query.php"
         ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Nodes\\Database\\Tests\\": "tests/"
+        }
     }
 }
