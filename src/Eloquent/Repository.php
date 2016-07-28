@@ -1,4 +1,5 @@
 <?php
+
 namespace Nodes\Database\Eloquent;
 
 use Closure;
@@ -12,10 +13,9 @@ use Nodes\Database\Exceptions\ModelNotSoftDeletable;
 use Nodes\Exceptions\Exception as NodesException;
 
 /**
- * Class Repository
+ * Class Repository.
  *
  * @abstract
- * @package Nodes\Database\Eloquent
  *
  * @see Illuminate\Database\Eloquent\Builder
  * @method IlluminateEloquentBuilder withGlobalScope($identifier, $scope)
@@ -105,25 +105,24 @@ use Nodes\Exceptions\Exception as NodesException;
 abstract class Repository
 {
     /**
-     * Repository model
+     * Repository model.
      *
      * @var \Illuminate\Database\Eloquent\Model
      */
     protected $model;
 
     /**
-     * Repository builder
+     * Repository builder.
      *
      * @var \Illuminate\Database\Eloquent\Builder
      */
     protected $builder;
 
     /**
-     * setupRepository
+     * setupRepository.
      *
      * @author Morten Rugaard <moru@nodes.dk>
      *
-     * @access public
      * @param  \Illuminate\Database\Eloquent\Model $model
      * @return void
      */
@@ -134,11 +133,10 @@ abstract class Repository
 
     /**
      * Initiates a new model instance
-     * and populate it's attributes with provided data
+     * and populate it's attributes with provided data.
      *
      * @author Morten Rugaard <moru@nodes.dk>
      *
-     * @access public
      * @param  array $attributes Array of data
      * @return \Illuminate\Database\Eloquent\Model
      */
@@ -146,12 +144,12 @@ abstract class Repository
     {
         return $this->getModel()->newInstance($attributes);
     }
+
     /**
-     * Generate a new instance and saves it
+     * Generate a new instance and saves it.
      *
      * @author Morten Rugaard <moru@nodes.dk>
      *
-     * @access public
      * @param  array $attributes Array of data
      * @return \Illuminate\Database\Eloquent\Model
      */
@@ -161,11 +159,10 @@ abstract class Repository
     }
 
     /**
-     * Set the relationships that should be eager loaded
+     * Set the relationships that should be eager loaded.
      *
      * @author Morten Rugaard <moru@nodes.dk>
      *
-     * @access public
      * @param  mixed $relations
      * @return $this
      */
@@ -178,11 +175,10 @@ abstract class Repository
     }
 
     /**
-     * Execute the query and get the first result
+     * Execute the query and get the first result.
      *
      * @author Morten Rugaard <moru@nodes.dk>
      *
-     * @access public
      * @param  array $columns
      * @return \Illuminate\Database\Eloquent\Model
      */
@@ -198,10 +194,9 @@ abstract class Repository
 
     /**
      * Execute the query and get the first result or throw an exception
-     *l
+     *l.
      * @author Morten Rugaard <moru@nodes.dk>
      *
-     * @access public
      * @param  array $columns
      * @return \Illuminate\Database\Eloquent\Model
      * @throws \Nodes\Database\Exceptions\EntityNotFoundException
@@ -217,11 +212,10 @@ abstract class Repository
     }
 
     /**
-     * Execute the query and retrieve result
+     * Execute the query and retrieve result.
      *
      * @author Morten Rugaard <moru@nodes.dk>
      *
-     * @access public
      * @param  array $columns
      * @return \Illuminate\Database\Eloquent\Collection
      */
@@ -236,15 +230,14 @@ abstract class Repository
     }
 
     /**
-     * Paginate the given query into a simple paginator
+     * Paginate the given query into a simple paginator.
      *
      * @author Morten Rugaard <moru@nodes.dk>
      *
-     * @access public
-     * @param  integer $perPage
+     * @param  int $perPage
      * @param  array   $columns
      * @param  string  $pageName
-     * @param  integer $page
+     * @param  int $page
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
     public function paginate($perPage = 15, $columns = ['*'], $pageName = 'page', $page = null)
@@ -258,14 +251,13 @@ abstract class Repository
     }
 
     /**
-     * Get a paginator only supporting simple next and previous links
+     * Get a paginator only supporting simple next and previous links.
      *
      * This is more efficient on larger data-sets, etc.
      *
      * @author Morten Rugaard <moru@nodes.dk>
      *
-     * @access public
-     * @param  integer $perPage
+     * @param  int $perPage
      * @param  array   $columns
      * @param  string  $pageName
      * @return \Illuminate\Contracts\Pagination\Paginator
@@ -281,13 +273,12 @@ abstract class Repository
     }
 
     /**
-     * Get the count of the total records for the paginator
+     * Get the count of the total records for the paginator.
      *
      * @author Morten Rugaard <moru@nodes.dk>
      *
-     * @access public
      * @param  array $columns
-     * @return integer
+     * @return int
      */
     public function getCountForPagination($columns = ['*'])
     {
@@ -300,11 +291,10 @@ abstract class Repository
     }
 
     /**
-     * Get a single column's value from the first result of a query
+     * Get a single column's value from the first result of a query.
      *
      * @author Morten Rugaard <moru@nodes.dk>
      *
-     * @access public
      * @param  string $column
      * @return mixed
      */
@@ -319,14 +309,13 @@ abstract class Repository
     }
 
     /**
-     * Chunk the results of the query
+     * Chunk the results of the query.
      *
      * @author Morten Rugaard <moru@nodes.dk>
      *
-     * @access public
-     * @param  integer  $count
+     * @param  int  $count
      * @param  callable $callback
-     * @return boolean
+     * @return bool
      */
     public function chunk($count, callable $callback)
     {
@@ -339,14 +328,13 @@ abstract class Repository
     }
 
     /**
-     * Execute a callback over each item while chunking
+     * Execute a callback over each item while chunking.
      *
      * @author Morten Rugaard <moru@nodes.dk>
      *
-     * @access public
      * @param  callable $callback
-     * @param  integer  $count
-     * @return boolean
+     * @param  int  $count
+     * @return bool
      * @throws \RuntimeException
      */
     public function each(callable $callback, $count = 1000)
@@ -360,11 +348,10 @@ abstract class Repository
     }
 
     /**
-     * Get an array with the values of a given column
+     * Get an array with the values of a given column.
      *
      * @author Morten Rugaard <moru@nodes.dk>
      *
-     * @access public
      * @param  string  $column
      * @param  string  $key
      * @return array
@@ -380,11 +367,10 @@ abstract class Repository
     }
 
     /**
-     * Alias for the "pluck" method
+     * Alias for the "pluck" method.
      *
      * @author Morten Rugaard <moru@nodes.dk>
      *
-     * @access public
      * @param  string  $column
      * @param  string  $key
      * @return array
@@ -395,11 +381,10 @@ abstract class Repository
     }
 
     /**
-     * Concatenate values of a given column as a string
+     * Concatenate values of a given column as a string.
      *
      * @author Morten Rugaard <moru@nodes.dk>
      *
-     * @access public
      * @param  string  $column
      * @param  string  $glue
      * @return string
@@ -415,12 +400,11 @@ abstract class Repository
     }
 
     /**
-     * Determine if any rows exist for the current query
+     * Determine if any rows exist for the current query.
      *
      * @author Morten Rugaard <moru@nodes.dk>
      *
-     * @access public
-     * @return boolean
+     * @return bool
      */
     public function exists()
     {
@@ -433,13 +417,12 @@ abstract class Repository
     }
 
     /**
-     * Execute query as a count statement
+     * Execute query as a count statement.
      *
      * @author Morten Rugaard <moru@nodes.dk>
      *
-     * @access public
      * @param  string $columns
-     * @return integer
+     * @return int
      */
     public function count($columns = '*')
     {
@@ -452,13 +435,12 @@ abstract class Repository
     }
 
     /**
-     * Retrieve the minimum value of a given column
+     * Retrieve the minimum value of a given column.
      *
      * @author Morten Rugaard <moru@nodes.dk>
      *
-     * @access public
      * @param  string $column
-     * @return float|integer
+     * @return float|int
      */
     public function min($column)
     {
@@ -471,13 +453,12 @@ abstract class Repository
     }
 
     /**
-     * Retrieve the maximum value of a given column
+     * Retrieve the maximum value of a given column.
      *
      * @author Morten Rugaard <moru@nodes.dk>
      *
-     * @access public
      * @param  string $column
-     * @return float|integer
+     * @return float|int
      */
     public function max($column)
     {
@@ -490,13 +471,12 @@ abstract class Repository
     }
 
     /**
-     * Retrieve the sum of the values of a given column
+     * Retrieve the sum of the values of a given column.
      *
      * @author Morten Rugaard <moru@nodes.dk>
      *
-     * @access public
      * @param  string $column
-     * @return float|integer
+     * @return float|int
      */
     public function sum($column)
     {
@@ -509,13 +489,12 @@ abstract class Repository
     }
 
     /**
-     * Retrieve the average of the values of a given column
+     * Retrieve the average of the values of a given column.
      *
      * @author Morten Rugaard <moru@nodes.dk>
      *
-     * @access public
      * @param  string $column
-     * @return float|integer
+     * @return float|int
      */
     public function avg($column)
     {
@@ -528,13 +507,12 @@ abstract class Repository
     }
 
     /**
-     * Alias for the "avg" method
+     * Alias for the "avg" method.
      *
      * @author Morten Rugaard <moru@nodes.dk>
      *
-     * @access public
      * @param  string $column
-     * @return float|integer
+     * @return float|int
      */
     public function average($column)
     {
@@ -542,14 +520,13 @@ abstract class Repository
     }
 
     /**
-     * Execute an aggregate function on the database
+     * Execute an aggregate function on the database.
      *
      * @author Morten Rugaard <moru@nodes.dk>
      *
-     * @access public
      * @param  string $function
      * @param  array  $columns
-     * @return float|integer
+     * @return float|int
      */
     public function aggregate($function, $columns = ['*'])
     {
@@ -562,13 +539,12 @@ abstract class Repository
     }
 
     /**
-     * Insert a new record into the database
+     * Insert a new record into the database.
      *
      * @author Morten Rugaard <moru@nodes.dk>
      *
-     * @access public
      * @param  array $values
-     * @return boolean
+     * @return bool
      */
     public function insert(array $values)
     {
@@ -581,14 +557,13 @@ abstract class Repository
     }
 
     /**
-     * Insert a new record and get the value of the primary key
+     * Insert a new record and get the value of the primary key.
      *
      * @author Morten Rugaard <moru@nodes.dk>
      *
-     * @access public
      * @param  array  $values
      * @param  string $sequence
-     * @return integer
+     * @return int
      */
     public function insertGetId(array $values, $sequence = null)
     {
@@ -601,13 +576,12 @@ abstract class Repository
     }
 
     /**
-     * Execute query as an update statement
+     * Execute query as an update statement.
      *
      * @author Morten Rugaard <moru@nodes.dk>
      *
-     * @access public
      * @param  array $values
-     * @return integer
+     * @return int
      */
     public function update(array $values)
     {
@@ -620,12 +594,11 @@ abstract class Repository
     }
 
     /**
-     * Execute query as a delete statement
+     * Execute query as a delete statement.
      *
      * @author Morten Rugaard <moru@nodes.dk>
      *
-     * @access public
-     * @return integer
+     * @return int
      */
     public function delete()
     {
@@ -638,12 +611,11 @@ abstract class Repository
     }
 
     /**
-     * Execute query as a (force) delete statement
+     * Execute query as a (force) delete statement.
      *
      * @author Morten Rugaard <moru@nodes.dk>
      *
-     * @access public
-     * @return integer
+     * @return int
      */
     public function forceDelete()
     {
@@ -656,17 +628,16 @@ abstract class Repository
     }
 
     /**
-     * Increment a column's value by a given amount
+     * Increment a column's value by a given amount.
      *
      * @author Morten Rugaard <moru@nodes.dk>
      *
-     * @access public
      * @param  string  $column
-     * @param  integer $amount
+     * @param  int $amount
      * @param  array   $extra
-     * @return integer
+     * @return int
      */
-    public function increment($column, $amount = 1, array $extra = array())
+    public function increment($column, $amount = 1, array $extra = [])
     {
         $result = $this->getBuilder()->increment($column, $amount, $extra);
 
@@ -677,17 +648,16 @@ abstract class Repository
     }
 
     /**
-     * Decrement a column's value by a given amount
+     * Decrement a column's value by a given amount.
      *
      * @author Morten Rugaard <moru@nodes.dk>
      *
-     * @access public
      * @param  string  $column
-     * @param  integer $amount
+     * @param  int $amount
      * @param  array   $extra
-     * @return integer
+     * @return int
      */
-    public function decrement($column, $amount = 1, array $extra = array())
+    public function decrement($column, $amount = 1, array $extra = [])
     {
         $result = $this->getBuilder()->decrement($column, $amount, $extra);
 
@@ -698,11 +668,10 @@ abstract class Repository
     }
 
     /**
-     * Run a truncate statement on the table
+     * Run a truncate statement on the table.
      *
      * @author Morten Rugaard <moru@nodes.dk>
      *
-     * @access public
      * @return void
      */
     public function truncate()
@@ -714,11 +683,10 @@ abstract class Repository
     }
 
     /**
-     * Create a raw database expression
+     * Create a raw database expression.
      *
      * @author Morten Rugaard <moru@nodes.dk>
      *
-     * @access public
      * @param  mixed  $value
      * @return \Illuminate\Database\Query\Expression
      */
@@ -733,11 +701,10 @@ abstract class Repository
     }
 
     /**
-     * Get the SQL representation of the query
+     * Get the SQL representation of the query.
      *
      * @author Morten Rugaard <moru@nodes.dk>
      *
-     * @access public
      * @return string
      */
     public function toSql()
@@ -751,11 +718,10 @@ abstract class Repository
     }
 
     /**
-     * Render repository's query SQL string
+     * Render repository's query SQL string.
      *
      * @author Morten Rugaard <moru@nodes.dk>
      *
-     * @access public
      * @return string
      */
     public function renderSql()
@@ -772,17 +738,16 @@ abstract class Repository
     }
 
     /**
-     * Include soft deleted entries in query
+     * Include soft deleted entries in query.
      *
      * @author Morten Rugaard <moru@nodes.dk>
      *
-     * @access public
      * @throws \Nodes\Database\Exceptions\ModelNotSoftDeletable
      */
     public function withTrashed()
     {
         // Validate model is soft deletable
-        if (!in_array(IlluminateEloquentSoftDeletes::class, class_uses($this->getModel()))) {
+        if (! in_array(IlluminateEloquentSoftDeletes::class, class_uses($this->getModel()))) {
             throw new ModelNotSoftDeletable('Model [%s] is not using the Soft Delete trait');
         }
 
@@ -793,18 +758,17 @@ abstract class Repository
     }
 
     /**
-     * Only include soft deleted entries in query
+     * Only include soft deleted entries in query.
      *
      * @author Morten Rugaard <moru@nodes.dk>
      *
-     * @access public
      * @return $this
      * @throws \Nodes\Database\Exceptions\ModelNotSoftDeletable
      */
     public function onlyTrashed()
     {
         // Validate model is soft deletable
-        if (!in_array(IlluminateEloquentSoftDeletes::class, class_uses($this->getModel()))) {
+        if (! in_array(IlluminateEloquentSoftDeletes::class, class_uses($this->getModel()))) {
             throw new ModelNotSoftDeletable('Model [%s] is not using the Soft Delete trait');
         }
 
@@ -815,11 +779,10 @@ abstract class Repository
     }
 
     /**
-     * Find a model by its primary key
+     * Find a model by its primary key.
      *
      * @author Morten Rugaard <moru@nodes.dk>
      *
-     * @access public
      * @param  mixed  $id
      * @param  array  $columns
      * @return \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Collection|null
@@ -834,7 +797,7 @@ abstract class Repository
     }
 
     /**
-     * Find a model by its primary key
+     * Find a model by its primary key.
      *
      * @author Morten Rugaard <moru@nodes.dk>
      *
@@ -854,11 +817,10 @@ abstract class Repository
     }
 
     /**
-     * Find a model by its primary key or throw an exception
+     * Find a model by its primary key or throw an exception.
      *
      * @author Morten Rugaard <moru@nodes.dk>
      *
-     * @access public
      * @param  mixed  $id
      * @param  array  $columns
      * @return \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Collection
@@ -872,7 +834,7 @@ abstract class Repository
             if (count($result) == count(array_unique($id))) {
                 return $result;
             }
-        } elseif (!is_null($result)) {
+        } elseif (! is_null($result)) {
             return $result;
         }
 
@@ -880,13 +842,12 @@ abstract class Repository
     }
 
     /**
-     * Retrieve entity by a specific column and value
+     * Retrieve entity by a specific column and value.
      *
      * @author Morten Rugaard <moru@nodes.dk>
      *
-     * @access public
      * @param  string         $column
-     * @param  string|integer $value
+     * @param  string|int $value
      * @param  array          $columns
      * @return \Illuminate\Database\Eloquent\Model
      */
@@ -904,15 +865,14 @@ abstract class Repository
     }
 
     /**
-     * Retrieve entity by a specific column and value
+     * Retrieve entity by a specific column and value.
      *
      * If entity is not found, we'll throw an exception
      *
      * @author Morten Rugaard <moru@nodes.dk>
      *
-     * @access public
      * @param  string         $column
-     * @param  string|integer $value
+     * @param  string|int $value
      * @param  array          $columns
      * @return \Illuminate\Database\Eloquent\Model
      * @throws \Nodes\Database\Exceptions\EntityNotFoundException
@@ -929,12 +889,11 @@ abstract class Repository
     }
 
     /**
-     * Retrieve entity by ID
+     * Retrieve entity by ID.
      *
      * @author Morten Rugaard <moru@nodes.dk>
      *
-     * @access public
-     * @param  integer $id
+     * @param  int $id
      * @param  array   $columns
      * @return \Illuminate\Database\Eloquent\Model
      */
@@ -944,14 +903,13 @@ abstract class Repository
     }
 
     /**
-     * Retrieve entity by ID
+     * Retrieve entity by ID.
      *
      * If entity is not found, we'll throw an exception
      *
      * @author Morten Rugaard <moru@nodes.dk>
      *
-     * @access public
-     * @param  integer $id
+     * @param  int $id
      * @param  array   $columns
      * @return \Illuminate\Database\Eloquent\Model
      * @throws \Nodes\Database\Exceptions\EntityNotFoundException
@@ -963,14 +921,13 @@ abstract class Repository
 
     /**
      * Retrieve entity by ID
-     * (including soft deleted entries)
+     * (including soft deleted entries).
      *
      * If entity is not found, we'll throw an exception
      *
      * @author Morten Rugaard <moru@nodes.dk>
      *
-     * @access public
-     * @param  integer $id
+     * @param  int $id
      * @param  array   $columns
      * @return \Illuminate\Database\Eloquent\Model
      * @throws \Nodes\Database\Exceptions\ModelNotSoftDeletable
@@ -982,12 +939,11 @@ abstract class Repository
 
     /**
      * Retrieve entity by ID
-     * (including soft deleted entries)
+     * (including soft deleted entries).
      *
      * @author Morten Rugaard <moru@nodes.dk>
      *
-     * @access public
-     * @param  integer $id
+     * @param  int $id
      * @param  array   $columns
      * @return \Illuminate\Database\Eloquent\Model
      * @throws \Nodes\Database\Exceptions\ModelNotSoftDeletable
@@ -998,21 +954,20 @@ abstract class Repository
     }
 
     /**
-     * Retrieve entity by a specific column and value. Will retry with a delay until found
+     * Retrieve entity by a specific column and value. Will retry with a delay until found.
      *
      * Should only be used in queues, where databases are in a cluster
      * and there's a chance it's not always in sync
      *
      * @author Casper Rasmussen <cr@nodes.dk>
      *
-     * @access public
      * @param  string  $column
      * @param  string  $value
      * @param  array   $columns
-     * @param  integer $retries
-     * @param  integer $delayMs
-     * @param  integer $maxDelay
-     * @param  integer $maxRetries
+     * @param  int $retries
+     * @param  int $delayMs
+     * @param  int $maxDelay
+     * @param  int $maxRetries
      * @return \Illuminate\Database\Eloquent\Model
      * @throws \Nodes\Exceptions\Exception
      */
@@ -1024,18 +979,18 @@ abstract class Repository
 
         // Validate delay parameter
         if ($delayMs > $maxDelay) {
-            throw new NodesException('Invalid input parameter. Maximum delay is ' . $maxDelay . ' milliseconds', 0, null, false);
+            throw new NodesException('Invalid input parameter. Maximum delay is '.$maxDelay.' milliseconds', 0, null, false);
         }
 
         // Validate retry parameter
         if ($retries > $maxRetries) {
-            throw new NodesException('Invalid input parameter. Maximum retry amount is ' . $maxRetries, 0, null, false);
+            throw new NodesException('Invalid input parameter. Maximum retry amount is '.$maxRetries, 0, null, false);
         }
 
         // Retrieve entity continuously
         for ($try = 0; $try < $retries; $try++) {
             $entity = $this->getBy($column, $value, $columns);
-            if (!empty($entity)) {
+            if (! empty($entity)) {
                 return $entity;
             }
 
@@ -1047,18 +1002,17 @@ abstract class Repository
     }
 
     /**
-     * Retrieve entity by ID. Will retry with a delay until found
+     * Retrieve entity by ID. Will retry with a delay until found.
      *
      * Should only be used in queues, where databases are in a cluster
      * and there's a chance it's not always in sync
      *
      * @author Casper Rasmussen <cr@nodes.dk>
      *
-     * @access public
-     * @param  integer $id
+     * @param  int $id
      * @param  array   $columns
-     * @param  integer $retries
-     * @param  integer $delayMs
+     * @param  int $retries
+     * @param  int $delayMs
      * @return \Illuminate\Database\Eloquent\Model
      * @throws \Nodes\Exceptions\Exception
      */
@@ -1068,18 +1022,17 @@ abstract class Repository
     }
 
     /**
-     * Retrieve entity by ID. Will retry with a delay until found or throw an exception
+     * Retrieve entity by ID. Will retry with a delay until found or throw an exception.
      *
      * Should only be used in queues, where databases are in a cluster
      * and there's a chance it's not always in sync
      *
      * @author Rasmus Ebbesen <re@nodes.dk>
      *
-     * @access public
-     * @param  integer $id
+     * @param  int $id
      * @param  array   $columns
-     * @param  integer $retries
-     * @param  integer $delayMs
+     * @param  int $retries
+     * @param  int $delayMs
      * @return \Illuminate\Database\Eloquent\Model
      * @throws \Nodes\Exceptions\Exception
      */
@@ -1095,26 +1048,25 @@ abstract class Repository
     }
 
     /**
-     * Delete morphed relations by entity
+     * Delete morphed relations by entity.
      *
      * Note: This should only be used with morphed relations
      *
      * @author Morten Rugaard <moru@nodes.dk>
      *
-     * @access public
      * @param  \Illuminate\Database\Eloquent\Model $entity
      * @param  string                              $relationName
-     * @param  boolean                             $forceDelete
-     * @return integer
+     * @param  bool                             $forceDelete
+     * @return int
      */
     public function deleteMorphsByEntity(IlluminateEloquentModel $entity, $relationName, $forceDelete = false)
     {
         // Retrieve all records by entity type and entity ID
         $entities = $this->getBuilder()
                          ->select(['id'])
-                         ->where(function($query) use ($entity, $relationName) {
-                             $query->where($relationName . '_type', '=', get_class($entity))
-                                   ->where($relationName . '_id', '=', (int) $entity->id);
+                         ->where(function ($query) use ($entity, $relationName) {
+                             $query->where($relationName.'_type', '=', get_class($entity))
+                                   ->where($relationName.'_id', '=', (int) $entity->id);
                          })
                          ->get();
 
@@ -1137,22 +1089,21 @@ abstract class Repository
     }
 
     /**
-     * Restore morphed relations by entity
+     * Restore morphed relations by entity.
      *
      * Note: This should only be used with morphed relations
      *
      * @author Morten Rugaard <moru@nodes.dk>
      *
-     * @access public
      * @param  \Illuminate\Database\Eloquent\Model $entity
      * @param  string                              $relationName
-     * @return integer
+     * @return int
      * @throws \Nodes\Database\Exceptions\ModelNotSoftDeletable
      */
     public function restoreMorphsByEntity(IlluminateEloquentModel $entity, $relationName)
     {
         // Validate model is soft deletable
-        if (!in_array(IlluminateEloquentSoftDeletes::class, class_uses($this->getModel()))) {
+        if (! in_array(IlluminateEloquentSoftDeletes::class, class_uses($this->getModel()))) {
             throw new ModelNotSoftDeletable('Model [%s] is not using the Soft Delete trait');
         }
 
@@ -1160,9 +1111,9 @@ abstract class Repository
         $entities = $this->onlyTrashed()
                          ->getBuilder()
                          ->select(['id'])
-                         ->where(function($query) use ($entity, $relationName) {
-                             $query->where($relationName . '_type', '=', get_class($entity))
-                                  ->where($relationName . '_id', '=', (int) $entity->id);
+                         ->where(function ($query) use ($entity, $relationName) {
+                             $query->where($relationName.'_type', '=', get_class($entity))
+                                  ->where($relationName.'_id', '=', (int) $entity->id);
                          })
                          ->get();
 
@@ -1184,11 +1135,10 @@ abstract class Repository
     }
 
     /**
-     * Begin transaction
+     * Begin transaction.
      *
      * @author Morten Rugaard <moru@nodes.dk>
      *
-     * @access public
      * @return void
      */
     public function beginTransaction()
@@ -1197,11 +1147,10 @@ abstract class Repository
     }
 
     /**
-     * Commit transaction
+     * Commit transaction.
      *
      * @author Morten Rugaard <moru@nodes.dk>
      *
-     * @access public
      * @return void
      */
     public function commitTransaction()
@@ -1210,11 +1159,10 @@ abstract class Repository
     }
 
     /**
-     * Rollback transaction
+     * Rollback transaction.
      *
      * @author Morten Rugaard <moru@nodes.dk>
      *
-     * @access public
      * @return void
      */
     public function rollbackTransaction()
@@ -1223,11 +1171,10 @@ abstract class Repository
     }
 
     /**
-     * Set repository model
+     * Set repository model.
      *
      * @author Morten Rugaard <moru@nodes.dk>
      *
-     * @access public
      * @param  \Illuminate\Database\Eloquent\Model $model
      * @return $this
      */
@@ -1243,11 +1190,10 @@ abstract class Repository
     }
 
     /**
-     * Retrieve repository model
+     * Retrieve repository model.
      *
      * @author Morten Rugaard <moru@nodes.dk>
      *
-     * @access public
      * @return \Illuminate\Database\Eloquent\Model
      */
     public function getModel()
@@ -1256,7 +1202,7 @@ abstract class Repository
     }
 
     /**
-     * Set repository builder
+     * Set repository builder.
      *
      * @author Morten Rugaard <moru@nodes.dk>
      *
@@ -1279,11 +1225,10 @@ abstract class Repository
     }
 
     /**
-     * Retrieve repository builder
+     * Retrieve repository builder.
      *
      * @author Morten Rugaard <moru@nodes.dk>
      *
-     * @access public
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function getBuilder()
@@ -1292,11 +1237,10 @@ abstract class Repository
     }
 
     /**
-     * Reset repository builder
+     * Reset repository builder.
      *
      * @author Morten Rugaard <moru@nodes.dk>
      *
-     * @access public
      * @return $this
      */
     public function resetBuilder()
@@ -1308,11 +1252,10 @@ abstract class Repository
     }
 
     /**
-     * Handle dynamic method calls into the repository builder
+     * Handle dynamic method calls into the repository builder.
      *
      * @author Morten Rugaard <moru@nodes.dk>
      *
-     * @access public
      * @param  string $method
      * @param  array  $parameters
      * @return $this
@@ -1320,6 +1263,7 @@ abstract class Repository
     public function __call($method, $parameters)
     {
         call_user_func_array([$this->getBuilder(), $method], $parameters);
+
         return $this;
     }
 }

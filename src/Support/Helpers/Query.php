@@ -1,7 +1,8 @@
 <?php
-if (!function_exists('render_sql')) {
+
+if (! function_exists('render_sql')) {
     /**
-     * Render query SQL string
+     * Render query SQL string.
      *
      * @author Morten Rugaard <moru@nodes.dk>
      *
