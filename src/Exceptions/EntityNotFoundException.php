@@ -1,25 +1,23 @@
 <?php
+
 namespace Nodes\Database\Exceptions;
 
 use Nodes\Exceptions\Exception as NodesException;
 
 /**
- * Class EntityNotFoundException
- *
- * @package Nodes\Database\Exceptions
+ * Class EntityNotFoundException.
  */
 class EntityNotFoundException extends NodesException
 {
     /**
-     * EntityNotFoundException constructor
+     * EntityNotFoundException constructor.
      *
      * @author Morten Rugaard <moru@nodes.dk>
      *
-     * @access public
      * @param  string   $message
-     * @param  integer  $code
+     * @param  int  $code
      * @param  array    $headers
-     * @param  boolean  $report
+     * @param  bool  $report
      * @param  string   $severity
      */
     public function __construct($message, $code = 445, array $headers = [], $report = false, $severity = 'error')
@@ -28,7 +26,7 @@ class EntityNotFoundException extends NodesException
 
         // Set status code and status message
         $this->setStatusCode(445, 'Entity not found');
-        
+
         // Should not report by default
         $this->dontReport();
     }
