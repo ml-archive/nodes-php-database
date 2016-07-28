@@ -10,6 +10,7 @@ A collection of our most used methods in pretty much every project we create at 
 [![Star repository on GitHub](https://img.shields.io/github/stars/nodes-php/database.svg?style=social&label=Star)](https://github.com/nodes-php/database/stargazers)
 [![Watch repository on GitHub](https://img.shields.io/github/watchers/nodes-php/database.svg?style=social&label=Watch)](https://github.com/nodes-php/database/watchers)
 [![Fork repository on GitHub](https://img.shields.io/github/forks/nodes-php/database.svg?style=social&label=Fork)](https://github.com/nodes-php/database/network)
+[![StyleCI](https://styleci.io/repos/49194368/shield)](https://styleci.io/repos/49194368)
 
 ## 📝 Introduction
 
