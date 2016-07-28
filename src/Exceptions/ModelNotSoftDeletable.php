@@ -1,25 +1,23 @@
 <?php
+
 namespace Nodes\Database\Exceptions;
 
 use Nodes\Exceptions\Exception as NodesException;
 
 /**
- * Class ModelNotSoftDeletable
- *
- * @package Nodes\Database\Exceptions
+ * Class ModelNotSoftDeletable.
  */
 class ModelNotSoftDeletable extends NodesException
 {
     /**
-     * ModelNotSoftDeletable constructor
+     * ModelNotSoftDeletable constructor.
      *
      * @author Morten Rugaard <moru@nodes.dk>
      *
-     * @access public
      * @param  string   $message
-     * @param  integer  $code
+     * @param  int  $code
      * @param  array    $headers
-     * @param  boolean  $report
+     * @param  bool  $report
      * @param  string   $severity
      */
     public function __construct($message, $code = 500, array $headers = [], $report = true, $severity = 'error')

@@ -1,4 +1,5 @@
 <?php
+
 namespace Nodes\Database\Eloquent;
 
 use Exception;
@@ -7,20 +8,17 @@ use Illuminate\Database\Eloquent\Model as IlluminateModel;
 use Nodes\Database\Exceptions\SaveFailedException;
 
 /**
- * Class Model
- *
- * @package Nodes\Database\Eloquent
+ * Class Model.
  */
 class Model extends IlluminateModel
 {
     /**
-     * Save the model to the database
+     * Save the model to the database.
      *
      * @author Morten Rugaard <moru@nodes.dk>
      *
-     * @access public
      * @param  array $options
-     * @return boolean
+     * @return bool
      * @throws \Nodes\Database\Exceptions\SaveFailedException
      */
     public function save(array $options = [])
@@ -32,7 +30,7 @@ class Model extends IlluminateModel
             // If save has been aborted from an event/observer
             // or simply returned an empty response, we'll treat
             // it as a failed save and throw an exception.
-            if (!$result) {
+            if (! $result) {
                 throw new SaveFailedException(sprintf('Could not save model [%s]. Reason: Save returned false.', get_class($this)));
             }
         } catch (Exception $e) {
