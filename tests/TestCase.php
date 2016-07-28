@@ -1,4 +1,5 @@
 <?php
+
 namespace Nodes\Database\Tests;
 
 use Mockery;
@@ -9,14 +10,14 @@ use Orchestra\Testbench\TestCase as OrchestraTestbench;
 class TestCase extends OrchestraTestbench
 {
     /**
-     * Mocked Illuminate model class
+     * Mocked Illuminate model class.
      *
      * @var \Mockery\MockInterface
      */
     protected $model;
 
     /**
-     * Mocked Nodes repository class
+     * Mocked Nodes repository class.
      *
      * @var \Mockery\MockInterface
      */
@@ -38,11 +39,10 @@ class TestCase extends OrchestraTestbench
     }
 
     /**
-     * Test if model is an Illuminate model
+     * Test if model is an Illuminate model.
      *
      * @author Morten Rugaard <moru@nodes.dk>
      *
-     * @access public
      * @return void
      */
     public function testIsIlluminateModel()
@@ -51,11 +51,10 @@ class TestCase extends OrchestraTestbench
     }
 
     /**
-     * Test that repository loads Illuminate model
+     * Test that repository loads Illuminate model.
      *
      * @author Morten Rugaard <moru@nodes.dk>
      *
-     * @access public
      * @return void
      */
     public function testRepositoryReturnsIlluminateModel()
