@@ -17,7 +17,7 @@ use Nodes\Exceptions\Exception as NodesException;
  *
  * @abstract
  *
- * @see Illuminate\Database\Eloquent\Builder
+ * @see \Illuminate\Database\Eloquent\Builder
  * @method IlluminateEloquentBuilder withGlobalScope($identifier, $scope)
  * @method IlluminateEloquentBuilder withoutGlobalScope($scope)
  * @method IlluminateEloquentBuilder withoutGlobalScopes(array $scopes = null)
@@ -39,8 +39,6 @@ use Nodes\Exceptions\Exception as NodesException;
  * @method IlluminateEloquentBuilder setEagerLoads(array $eagerLoad)
  * @method void macro($name, Closure $callback)
  * @method Closure getMacro($name)
- *
- * @see Illuminate\Database\Query\Builder
  * @method IlluminateEloquentBuilder select($columns = ['*'])
  * @method IlluminateEloquentBuilder selectRaw($expression, array $bindings = [])
  * @method IlluminateEloquentBuilder selectSub($query, $as)
@@ -739,6 +737,7 @@ abstract class Repository
 
     /**
      * Include soft deleted entries in query.
+     * Note this will reset the build
      *
      * @author Morten Rugaard <moru@nodes.dk>
      *
@@ -759,6 +758,7 @@ abstract class Repository
 
     /**
      * Only include soft deleted entries in query.
+     * Note this will reset the build
      *
      * @author Morten Rugaard <moru@nodes.dk>
      *

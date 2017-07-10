@@ -36,11 +36,11 @@ class Model extends IlluminateModel
         } catch (Exception $e) {
             // Catch exceptions and re-throw
             // as our Nodes "save failed" exceptions
-            throw new SaveFailedException(sprintf('Could not save model [%s]. Reason: %s', get_class($this), $e->getMessage()));
+            throw (new SaveFailedException(sprintf('Could not save model [%s]. Reason: %s', get_class($this), $e->getMessage())))->setPreviousException($e);
         } catch (Throwable $e) {
             // Add support for PHP 7 throwable interface.
             // Re-throw as our Nodes "save failed" exceptions.
-            throw new SaveFailedException(sprintf('Could not save model [%s]. Reason: %s', get_class($this), $e->getMessage()));
+            throw (new SaveFailedException(sprintf('Could not save model [%s]. Reason: %s', get_class($this), $e->getMessage())))->setPreviousException($e);
         }
 
         return $result;
