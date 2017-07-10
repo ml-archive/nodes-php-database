@@ -9,22 +9,66 @@ use Nodes\Exceptions\Exception as NodesException;
  */
 class SaveFailedException extends NodesException
 {
+    protected $previousException;
+
     /**
-     * SaveFailedException constructor.
+     * SaveFailedException constructor
      *
-     * @author Morten Rugaard <moru@nodes.dk>
-     *
-     * @param  string   $message
-     * @param  int  $code
-     * @param  array    $headers
-     * @param  bool  $report
-     * @param  string   $severity
+     * @author Casper Rasmussen <cr@nodes.dk>
+     * @access public
+     * @param string $message
+     * @param int    $code
+     * @param array  $headers
+     * @param bool   $report
+     * @param string $severity
      */
-    public function __construct($message, $code = 550, array $headers = [], $report = true, $severity = 'error')
-    {
+    public function __construct(
+        $message = null,
+        $code = 550,
+        array $headers = [],
+        $report = true,
+        $severity = 'error'
+    ) {
         parent::__construct($message, $code, $headers, $report, $severity);
+        $this->setPreviousExceptionMeta();
 
         // Set status code and status message
         $this->setStatusCode(550, 'Could not save to database');
+    }
+
+    /**
+     * setPreviousException
+     *
+     * @author Casper Rasmussen <cr@nodes.dk>
+     * @access public
+     * @param \Exception $e
+     * @return $this
+     */
+    public function setPreviousException(\Exception $e)
+    {
+        $this->previousException = $e;
+
+        $this->setPreviousExceptionMeta();
+
+        return $this;
+    }
+
+    /**
+     * setPreviousExceptionMeta
+     *
+     * @author Casper Rasmussen <cr@nodes.dk>
+     * @access private
+     * @return void
+     */
+    private function setPreviousExceptionMeta()
+    {
+        if ($exception = $this->previousException) {
+            $this->meta['previous_exception'] = [
+                'message'  => $exception->getMessage(),
+                'file'     => $exception->getFile(),
+                'line'     => $exception->getLine(),
+                'trace'    => $exception->getTrace(),
+            ];
+        }
     }
 }

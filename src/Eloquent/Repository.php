@@ -759,7 +759,7 @@ abstract class Repository
     /**
      * Only include soft deleted entries in query.
      * Note this will reset the build
-     * 
+     *
      * @author Morten Rugaard <moru@nodes.dk>
      *
      * @return $this
