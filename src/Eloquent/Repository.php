@@ -929,7 +929,7 @@ abstract class Repository
      *
      * @param  int $id
      * @param  array   $columns
-     * @return \Illuminate\Database\Eloquent\Model
+     * @return \Illuminate\Database\Eloquent\Model|null
      * @throws \Nodes\Database\Exceptions\ModelNotSoftDeletable
      */
     public function getByIdWithTrashed($id, array $columns = ['*'])
@@ -947,6 +947,7 @@ abstract class Repository
      * @param  array   $columns
      * @return \Illuminate\Database\Eloquent\Model
      * @throws \Nodes\Database\Exceptions\ModelNotSoftDeletable
+     * @throws \Nodes\Database\Exceptions\EntityNotFoundException
      */
     public function getByIdWithTrashedOrFail($id, array $columns = ['*'])
     {
@@ -1034,7 +1035,7 @@ abstract class Repository
      * @param  int $retries
      * @param  int $delayMs
      * @return \Illuminate\Database\Eloquent\Model
-     * @throws \Nodes\Exceptions\Exception
+     * @throws \Nodes\Database\Exceptions\EntityNotFoundException
      */
     public function getByIdContinuouslyOrFail($id, array $columns = ['*'], $retries = 10, $delayMs = 100)
     {
