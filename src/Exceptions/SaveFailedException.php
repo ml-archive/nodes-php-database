@@ -41,10 +41,10 @@ class SaveFailedException extends NodesException
      *
      * @author Casper Rasmussen <cr@nodes.dk>
      * @access public
-     * @param \Exception $e
+     * @param \Exception|\Throwable $e
      * @return $this
      */
-    public function setPreviousException(\Exception $e)
+    public function setPreviousException($e)
     {
         $this->previousException = $e;
 

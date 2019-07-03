@@ -1,5 +1,10 @@
 ## Database
 
+⚠️**This package is deprecated**⚠️
+
+Most of this is build in Laravel now. No reason to use this anymore
+
+
 A collection of our most used methods in pretty much every project we create at [Nodes](http://nodesagency.com)
 
 [![Total downloads](https://img.shields.io/packagist/dt/nodes/database.svg)](https://packagist.org/packages/nodes/database)
