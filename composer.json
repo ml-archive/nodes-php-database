@@ -19,8 +19,8 @@
     ],
     "require": {
         "php": ">=5.6",
-        "illuminate/support": "5.2.*||5.3.*||5.4.*||5.5.*||5.6.*||5.7.*||5.8.*||6.14.*",
-        "illuminate/database": "5.2.*||5.3.*||5.4.*||5.5.*||5.6.*||5.7.*||5.8.*||6.14.*",
+        "illuminate/support": ">=5.2.0 <6.15.0",
+        "illuminate/database": ">=5.2.0 <6.15.0",
         "nodes/core": "1.1.*"
     },
     "require-dev": {
